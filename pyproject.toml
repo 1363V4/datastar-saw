@@ -1,0 +1,12 @@
+[project]
+name = "saw"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datastar-py>=0.6.5",
+    "htpy>=25.10.0",
+    "sanic>=25.3.0",
+    "tinydb>=4.8.2",
+]

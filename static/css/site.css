@@ -1,0 +1,30 @@
+@import url("gold.css") layer(gold);
+
+:root {
+    --blue: #2196f3;
+    --grey: #7b8794;
+    --yellow: #fff176;
+    --green: #4caf50;
+}
+
+body {
+    background: var(--blue);
+}
+
+h1 {
+    display: grid;
+    grid-template-columns: repeat(4, 4rem);
+    gap: .2rem;
+    height: 4rem;
+}
+
+h1 div {
+    border: 2px solid var(--grey);
+    border-radius: 20px;
+    &:nth-child(1), &:nth-child(3) {
+        background: var(--yellow);
+    }
+    &:last-child {
+        background: var(--green);
+    }
+}
