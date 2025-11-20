@@ -9,15 +9,14 @@
     <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
 </head>
 <body class="gf gc gz">
-	<input id="mobile-input" type=text
-	autocorrect="off" spellcheck="false" autocomplete="off"
-	class="gf"></input>
-	<main>
+	<main
+	data-init="@get('/cqrs_sse')">
 	    <h1>input test</h1>
 	    <p>just rerender everything bro</p>
 	    <div
 		data-signals:key=""
-	    data-on:keydown__window="$key = evt.key; @post('/wotd')">
+	    data-on:keydown__window="$key = evt.key; @post('/cqrs_pit')"
+	    >
 	    	<div id="test"></div>
 	    </div>
 	    <p>should work on mobile</p>
