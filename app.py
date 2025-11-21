@@ -3,7 +3,6 @@ import asyncio
 import logging
 from uuid import uuid4
 import string
-import asyncio
 
 from sanic import Sanic
 from datastar_py import ServerSentEventGenerator as SSE
@@ -80,12 +79,14 @@ async def cqrs_sse(request):
     pubsub = app.ctx.redis_client.pubsub()
     channel = f"word:{user_id}"
     await pubsub.subscribe(channel)
+    accum = ""
     try:
         async for message in pubsub.listen():
             if message.get('type') == "message":
                 logger.info(str(message))
                 key = message.get('data')
-                html = f"<div id='test'>{key}</div>"
+                accum += key
+                html = f"<div id='test'>{accum}</div>"
                 yield SSE.patch_elements(html)
     except asyncio.CancelledError:
         raise
@@ -96,7 +97,6 @@ async def cqrs_sse(request):
 @app.post('/cqrs_pit')
 @datastar_response
 async def cqrs_pit(request):
-    logger.info("pas fou")
     logger.info(request.body)
     key = request.json.get('key')
     user_id = request.cookies.get('user_id')

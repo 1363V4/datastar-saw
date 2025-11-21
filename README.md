@@ -34,3 +34,7 @@ Leçon de Balatro: quand t'es riche, tout est facile. jeu jaune ftw
 Fine Young Cannibals - I'm Not The Man I Used To Be (Official Video)
 Le cru et le cuit - le brut et le raffiné
 le cuit qu'elle fait pour toi
+je pleure sur le poulet
+
+Spoon shake, loop c tout
+on apprend les coups du spoonshake avec des cartes
