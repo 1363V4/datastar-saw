@@ -3,21 +3,22 @@ import asyncio
 import logging
 from uuid import uuid4
 import string
+import queue
 
 from sanic import Sanic
 from datastar_py import ServerSentEventGenerator as SSE
+from datastar_py import attribute_generator as data
 from datastar_py.sanic import datastar_response, read_signals
 
 from tinydb import TinyDB
 import redis.asyncio as redis
 
-from views import main_view
+import htpy as h
 
 
 app = Sanic(__name__)
 app.static('/static/', './static/')
 app.static('/', './index.html', name="index")
-app.static('/cqrs', './cqrs.html', name="cqrs")
 
 logging.basicConfig(filename='perso.log', encoding='utf-8', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,9 +30,16 @@ logger = logging.getLogger(__name__)
 # games = temp_db.table('games')
 # deux db, une temp une importante?
 
+async def wassup_psutil():
+    while True:
+        ... # pour q les reads
+
+# app.add_task(wassup_psutil)
+
 @app.before_server_start
 async def open_connections(app):
     app.ctx.db = {}
+    app.ctx.write_q = queue.Queue()
     app.ctx.redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
 @app.after_server_stop
@@ -45,66 +53,62 @@ async def cookie(request, response):
         app.ctx.db[user_id] = ""
         response.add_cookie('user_id', user_id)
 
-@app.post('/wotd') # cant handle spaces dumb design lol
+# UTILS
+
+async def process_key(key, lines):
+    ...
+
+
+# VIEWS
+
+async def main_view(game_id=None):
+    lines = ("MOTUS", "AC___")
+    html = h.body(".gc.gf")[
+        h.div(
+            data.signals({'key': 'ok'}),
+            data.on('keydown', "$key = evt.key; @post('/wotd')").window
+        ),
+        h.div("#lines")[
+            (h.div(".line")[line] for line in lines)
+        ]
+    ]
+    return str(html)
+
+# ROUTES
+
+@app.get('/wotd')
 @datastar_response
 async def wotd(request):
     user_id = request.cookies.get('user_id')
-    # html = await main_view()
-    inputs = app.ctx.db.get(user_id)
-    if not inputs:
-        inputs = ""
-    key = (await read_signals(request)).get('key')
-    if not key:
-        return
-    key = key.lower()
-    if key.lower() in string.ascii_lowercase:
-        inputs += f"{key}"
-    else:
-        match key:
-            case " ":
-                inputs += " "
-            case "backspace" if inputs:
-                inputs = inputs[:-1]
-            case _:
-                pass
-
-    app.ctx.db[user_id] = inputs
-    html = f"<div id='test'>{inputs}</div>"
-    return SSE.patch_elements(html)
-
-@app.get('/cqrs_sse')
-@datastar_response
-async def cqrs_sse(request):
-    user_id = request.cookies.get('user_id')
+    game_id = uuid4().hex
+    app.ctx.db['user_id'] = game_id
     pubsub = app.ctx.redis_client.pubsub()
-    channel = f"word:{user_id}"
+    channel = f"game:{game_id}"
     await pubsub.subscribe(channel)
-    accum = ""
     try:
         async for message in pubsub.listen():
-            if message.get('type') == "message":
-                logger.info(str(message))
-                key = message.get('data')
-                accum += key
-                html = f"<div id='test'>{accum}</div>"
-                yield SSE.patch_elements(html)
+            html = await main_view()
+            yield SSE.patch_elements(html)
     except asyncio.CancelledError:
         raise
     finally:
         await pubsub.unsubscribe(channel)
         await pubsub.close()
 
-@app.post('/cqrs_pit')
+@app.post('/wotd')
 @datastar_response
 async def cqrs_pit(request):
-    logger.info(request.body)
     key = request.json.get('key')
-    user_id = request.cookies.get('user_id')
     if not key:
         return
+    user_id = request.cookies.get('user_id')
+    game_id = app.ctx.db.get('user_id')
+    if not game_id:
+        return
     key = key.lower()
-    if key.lower() in string.ascii_lowercase:
-        await app.ctx.redis_client.publish(f"word:{user_id}", key)
+    if key not in string.ascii_lowercase:
+        return
+    await app.ctx.redis_client.publish(f"game:{game_id}", key)
 
 
 if __name__ == "__main__":

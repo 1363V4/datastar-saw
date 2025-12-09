@@ -13,13 +13,8 @@
 	autocorrect="off" spellcheck="false" autocomplete="off"
 	class="gf"></input>
 	<main>
-	    <h1>input test</h1>
-	    <p>just rerender everything bro</p>
-	    <div
-		data-signals:key=""
-	    data-on:keydown__window="$key = evt.key; @post('/wotd')">
-	    	<div id="test"></div>
-	    </div>
-	    <p>should work on mobile</p>
+	    <h1>wordle</h1>
+		<button data-on:click="@get('/wotd')">normal</button>
+		<button data-on:click="@get('/custom')">custom</button>
 	</main>
 </body>

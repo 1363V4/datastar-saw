@@ -30,11 +30,23 @@ on colle un signal dans le truc, on récup
 pas besoin de faire combinaison de touches ou saut de lignes c bon
 
 Leçon de Balatro: quand t'es riche, tout est facile. jeu jaune ftw
+(autre leçon une fois la mise or
+en vrai c'est surtout que tout coûte cher
+et dans le négatif t'es mort)
 
 Fine Young Cannibals - I'm Not The Man I Used To Be (Official Video)
 Le cru et le cuit - le brut et le raffiné
 le cuit qu'elle fait pour toi
 je pleure sur le poulet
+vérité difficile : tout est joué très vite
+ce que tu peux contrôler : ne pas être trompé
+hypnotisé, diverti, tenté
+ce que tu ne peux pas : que la vie te reprenne
+t'arrache, reprenne, récupère
 
 Spoon shake, loop c tout
 on apprend les coups du spoonshake avec des cartes
+
+refaire twitch en ecs... watchpartwitch, on dirait un bled anglais
+tmp is for guests, a branch is a gift
+(bon n'a pas marché non plus)
